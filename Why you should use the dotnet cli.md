@@ -132,7 +132,9 @@ dotnet new console -n MyConsoleApp
 Both of these examples will yield the same results!
 ### Use .NET snippets
 
-If you've been following along with the 
+If you've been following along in your own terminal, you probably saw just how many options were available when you ran `dotnet new list`. That's because the `dotnet new` command can be used for more than just creating new project templates, you can also insert snippets, which are smaller templates designed to be used within certain projects!
+
+
 
 ### Test your apps
 
