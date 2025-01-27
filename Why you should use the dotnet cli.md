@@ -1,8 +1,8 @@
 ---
-title: Why you should use the .NET CLI
-date: 2025-01-26
-summary: "A walkthrough of an essential .NET tool"
-description: "A walkthrough of an essential .NET tool"
+title: Supercharge Productivity with the .NET CLI
+date: 2025-01-27
+summary: "Speed up your .NET development"
+description: "Speed up your .NET development"
 toc: false
 readTime: true
 autonumber: false
@@ -34,6 +34,8 @@ A better reason to learn this CLI is so that you don't become too dependent upon
 
 Most importantly, you will be able to have access to all the tools that the SDK offers in production environments where you don't want the server to have to bear the weight of the IDE.
 
+As a side note, since Microsoft discontinued Visual Studio for Mac, the CLI has become far more valuable specifically on Mac OS since its the most powerful way to use the .NET SDK.
+
 ### What's the real reason...
 
 Okay, you caught me. It's way cooler to type something into your terminal and watch the outcome. Don't you just feel like you're a hacker in a movie? Making things more fun in the process is not a problem!
@@ -61,7 +63,7 @@ This should give you a version number output!
 
 And you're ready to get started!
 
-### Using the CLI
+## Best Uses for the .NET CLI
 
 In this section, I'm going to walk you through some of the most valuable commands that I've discovered and use. Take some time to try them out on your own and work to incorporate them into your own development environment. 
 
@@ -134,10 +136,65 @@ Both of these examples will yield the same results!
 
 If you've been following along in your own terminal, you probably saw just how many options were available when you ran `dotnet new list`. That's because the `dotnet new` command can be used for more than just creating new project templates, you can also insert snippets, which are smaller templates designed to be used within certain projects!
 
+For example, lets assume that you've created an MVC app and you're ready to add another controller for a model. You can `cd` into your Controllers directory and run...
 
+```powershell
+dotnet new mvccontroller -n "NewController"
+```
 
+...to produce the following file:
+
+```csharp
+// NewController.cs
+namespace MyApp.Namespace
+{
+    public class NewController : Controller
+    {
+        // GET: NewController
+        public ActionResult Index()
+        {
+            return View();
+        }
+    }
+}
+```
+
+You can try the same process with your Razor Views, Razor Pages, ViewImports file, ViewStart file, .gitignore and more!
 ### Test your apps
 
-### Preparing your apps for release
+If you're running your tests with the VSTest framework you can run...
 
-### Add packages to your application
+```powershell
+dotnet test
+```
+
+...to run your entire test suite! It's faster than launching your Test Explorer if you're doing a quick check before a commit!
+
+### Add packages to your app
+
+Yes, yes, the Nuget package manager is very nice, but we're optimizing for speed! Do you already know the name of the package that you're trying to install? 
+
+```powershell
+dotnet add package EntityFramework
+```
+
+You can do this on the PM Console as well, but if you're already using your Developer Console, then you might as well not switch! 
+### BONUS:
+
+A few other commands that I've liked using!
+
++ `dotnet format whitespace` - Avoid a "blank line" comment on your next code review by running this command!
++ `dotnet build` - Verify that your project builds without touching your mouse!
++ `dotnet pack` - With a few other configurations, turn your project into a NuGet package.
++ `dotnet remove` - Specify a package that you accidentally added to get rid of it!
++ `dotnet watch` - Specify a file to enable hot reloads on file changes! Make your frontend work way less tedious!
++ `dotnet publish` - Bundle your project for distribution! Outputs to the `/bin` directory.
+
+## Have I Convinced You Yet? 
+
+The .NET CLI is quite powerful (and has the potential to make you feel like a 10X dev wizard). Take a few of these commands with you the next time you're working on a project. It will probably take some time and intentionality to start using them regularly, but if you do, you'll be free of your mouse in no time. 😉
+
+This lesson is part of my long-term effort to learn ASP.NET. If you want to see the resources that I'm using, check out my post, [Learn ASP.NET From Scratch](https://nolanmiller.me/posts/learn-asp.net-core-from-scratch/). 
+
+Consider getting these posts straight to your inbox using the form below!
+
