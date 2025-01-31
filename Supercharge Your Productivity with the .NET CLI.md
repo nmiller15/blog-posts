@@ -7,7 +7,7 @@ toc: false
 readTime: true
 autonumber: false
 math: true
-tags: dotnet - learning - commandline - Microsoft
+tags: ["dotnet", "learning", "commandline", "Microsoft"]
 showTags: true
 hideBackToTop: false
 draft: false
