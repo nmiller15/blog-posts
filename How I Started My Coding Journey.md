@@ -12,7 +12,6 @@ showTags: true
 hideBackToTop: false
 draft: false
 dev: true
-dev_id: 2252645
 ---
 Just 6 months ago, I didn't really know how to code, and coding was just this thing that only really smart people did. I wasn't even pursuing it. I thought it was cool, but not cool enough to learn it. I knew some basics of HTML and CSS… enough to break a Squarespace site that is. But, nothing that would make me *actually* dangerous. The word "JavaScript" sent me cowering.
 
