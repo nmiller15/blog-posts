@@ -64,15 +64,75 @@ This use of top-level statements is also very new, so if you're working in a cod
 
 ## Give the people what they want
 
-wwwroot
+A very important file in this template is the `wwwroot` folder. This is where files that are delivered directly to the client are stored. Everything else in your project will live on your server while the application is running, but as soon as someone requests the app from their computer, these files will be delivered.
 
+This files are called *static* files. They include CSS stylesheets, Javascript, and you can even add images to be referenced from in here. Libraries for Bootstrap and jQuery are also stored in here. 
 ### Access static files using their pathname
 
+Since these files are delivered to the client, you can access these files in the browser while the app is running. To make sure this works, ensure that in `Program.cs`, before your `app.Run()` call, you have mounted the middleware to use static files. Add a line that says `app.UseStaticFiles()`. 
+
+In your wwwroot folder, create a directory named images and put a picture that you have stored on your computer there. Your directory structure should look like this.
+
+```plaintext
+wwwroot/
+├── css/
+├── images/
+│   ├── testimage.png
+├── js/
+└── lib/
+```
+
+Now run your application and visit `https://localhost:{port}/images/testimage.png`. Using your folder structure as a pathname, as you might in your computer's own file system, you can access these files!
 
 ## Your Code Goes Here
 
+Now it's time to talk about the fun stuff. Where the C# code that you write goes! In the MVC template, there are three folders generated: `Models`, `Views`, `Controllers`. These contain... well exactly what they say. I won't dig too far into exactly what the MVC pattern is here, but for a good resource check out [this article from Codecademy](https://www.codecademy.com/article/mvc). 
 ### Models are just C# classes
 
+```
+Models/
+└── ErrorViewModel.cs
+```
+
+Starting with the Models folder, you can see that the template doesn't give us a lot. Just a file called `ErrorViewModel.cs`. If you click on it you will find a very simple C# class with properties for `RequestID` and a Boolean `ShowRequestId`.
+
+This class is used by the simple application that is provided for you when you generate the template. The thing to notice here, is that it is a vanilla C# class. There's nothing special added here. This is just a class that can be instantiated later.
+
+Lets say that we were creating [a movie application](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-9.0&tabs=visual-studio). This is the folder where you would create a class for a movie that stores all of its related information: title, director, runtime, etc. This model will then be referenced by all of the places in the application that a movie object is needed.
+
 ### Views are written in HTML... sort of
+
+```plaintext
+Views/
+├── Home/
+│   ├── Index.cshtml
+│   ├── Privacy.cshtml
+├── Shared/
+│   ├── _Layout.cshtml
+│   ├── _ValidationScriptsPartial.cshtml
+│   └── Error.cshtml
+├── _ViewImports.cshtml
+└── _ViewStart.cshtml
+```
+
+Like I mentioned above, the template that is generated is a working application. If you launch it, you will see that you can navigate between the home pages (called Index) and a Privacy page. You may notice that there are two files in our `Views/Home/` directory that represent these pages! Let's take a look at our Index file. (Formatted for easier reading.)
+
+```html
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <p>
+	    Learn about 
+		    <a href="https://learn.microsoft.com/aspnet/core">
+			    building Web apps with ASP.NET Core
+			</a>
+		.
+	</p>
+</div>
+```
+
 
 ### Setup a layout for your application
