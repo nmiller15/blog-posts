@@ -14,29 +14,27 @@ draft: true
 dev: false
 ---
 
-Templates for common projects can really speed up the beginning of a project. The .NET SDK has templates for the most common types of projects, allowing you to bypass the tedious boilerplate setup and skip straight to a working app that you can quickly add your own code to. 
+Using a template for a common technology can speed you along the setup process of building an application. It allows you to bypass the tedious and error-prone boilerplate setup and gives you a working app that is easy to extend! If you're unfamiliar with the technology or the structure, seeing the number of files and directories that are generated for you can be daunting.
 
-While this saves quite a lot of time, if you haven't used ASP.NET before, or used the MVC pattern, these templates can be intimidating. There are so many files and folders, where do you begin? 
-
-I'll go through each of the major folders that you'll see if you create an mvc template using Visual Studio or the .NET CLI and talk a little about what it does and why it's there. By the end, you'll be able to start adding your own code into the template with confidence!
+I am going to create an ASP.NET MVC app today. Well, actually just the template. But, after one command in your terminal, you will have a working application. Today, I'd like to talk about how all of these files work together to create this MVC application. We'll cover files that are specific to this template, and others that are common to all .NET applications.
 
 So, without further adieu, open up a terminal, run `dotnet new mvc` and follow along!
 
 ## Describing your project
 
-Before we dive into all of the different folders that are available in this template that you're looking at, the first thing we should talk about are files that are included with every project type: the `.sln` and `.csproj` files. Without these files, your project isn't going to run. Both of these define important pieces of your project.
+Before we dive into the specifics of this template, we should first talk about the files included with *every* project template: the `.sln` and `.csproj` files. Without these files, your project isn't going to run. Suffice it to say... they're important.
 
 ### Solutions are made up of projects
 
-If you're newer to ASP.NET, the distinction between Solutions and Projects may just seem like a weird semantic difference. The first time that I created an app from a template in Visual Studio, I wasn't sure either.
+If you're new to .NET, you might be asking "What the heck is a solution?" I will admit that the terminology threw me a little when I started as well.
 
-Well, let there be no more confusion. A solution is a set of projects that work together and interdepend on one another. Not every project in a soltion will be referenced in every other, but in general different projects like class libraries, console apps and MVC applications can work together to create an entire solution.
+A solution is a container for a project or set of projects that work together and depend on one another. In general different projects like class libraries, console apps and MVC applications can work together to create an entire solution.
 
-### The .sln file defines your projects
+### The `.sln` file defines your projects
 
-You won't do much in this file, or even open it really if you're using an IDE. This file has a good amount of very difficult-to-read configuration. It's not really important that you know how to manipulate this as long as you're using something like Visual Studio or Jetbrains Rider. The main function of this file is to talk with your IDE and link all of your projects to a startup project.
+You probably won't look at this file or do much with it, but that doesn't mean it isn't important. It contains vital configurations for your project. Most of the manipulation of this file will be done by your IDE, not you. Just know that you cannot get rid of this file!
 
-### The .csproj file gives your project dependencies
+### The `.csproj` file gives your project dependencies
 
 The `.csproj` file, on the other hand, defines the dependencies of an individual project. Does it need a class library? How about a NuGet package? All of that good stuff can be defined right here. The syntax is somewhat similar to HTML, using matching opening and closing tags to surrond the information.
 
@@ -87,6 +85,7 @@ Now run your application and visit `https://localhost:{port}/images/testimage.pn
 ## Your Code Goes Here
 
 Now it's time to talk about the fun stuff. Where the C# code that you write goes! In the MVC template, there are three folders generated: `Models`, `Views`, `Controllers`. These contain... well exactly what they say. I won't dig too far into exactly what the MVC pattern is here, but for a good resource check out [this article from Codecademy](https://www.codecademy.com/article/mvc). 
+
 ### Models are just C# classes
 
 ```
@@ -134,5 +133,62 @@ Like I mentioned above, the template that is generated is a working application.
 </div>
 ```
 
-
+It's just HTML! It has a few additions, but very easy to understand. The `.cshtml` files that you see are View files, html displays that have access to run C# code between the `@` symbols. 
 ### Setup a layout for your application
+
+The use of `.cshtml` files also allows for us to keep from repeating code. Load up the mvc template and you will see that a significant amount of the interface doesn't change when you go from one page to another, this is because these views are rendered inside of a layout. 
+
+Two files to point out here are the `_ViewStart.cshtml` and `_Layout.cshtml`. The `_ViewStart.cshtml` file...
+
+```cs
+@{
+	Layout = "_Layout";
+}
+```
+
+Sets the Layout property for all of the view pages. All views *start* here! Then `_Layout.cshtml` contains the actual layout that we're assigning here!
+
+Here is where `<meta>` and `<title>` tags appear, as well as the doctype declarations. When you open this, you'll see that there's quite a bit of HTML here, and it would be pretty annoying to have to put this on every one of your view pages.
+
+One thing to point out about the `_Layout.cshtml` file is the `@RenderBody()` method. In the starting template for an MVC application, it's called on line 36. This is the method that allows all of the other views to be displayed. Without this method, the application doesn't work! Wherever you put this in the layout is where the view that you're setting will be rendered.
+
+### Controllers decide what views get displayed
+
+```
+Controllers/
+└── HomeController.cs
+```
+
+The last part of the mvc model is the controller, the brains of the operation! If you open the `Controllers` directory, you will see that they supply us with a `HomeController`. In this file, you will see a `HomeController` class that inherits from the `Controller` class.
+
+This `HomeController` class has a constructor, and three methods, `Index()`, `Privacy()`, and `Error()`. You may notice that these correspond directly to the views that we saw in the previous section. These methods handle what happens when a use goes to a certain route on the app. 
+
+Go ahead and launch the application and navigate to `https://localhost:{port}/Home/Privacy`. You will get the `Privacy` View within the `HomeController`!
+
+The slug for the URL is decided first by the name of the controller and then the name of the method that returns an `IActionResult`. 
+
+So if you had the following:
+
+```csharp
+public class MovieController : Controller
+{
+	// props and ctor
+
+	public IActionResult Directors()
+	{
+		return View();
+	}
+}
+```
+
+You could visit `https://localhost:{port}/Movie/Directors` and you would be returned a view, so long as you have a corresponding view in the Views directory!
+
+## Scratching the surface
+
+This post is by no means an in depth look at the MVC model within the ASP.NET space, we've only scratched the surface of what is possible here. But, armed with this knowledge, you should know enough to be able to create an application template, and know how you can begin to manipulate it to create something simple of your own!
+
+---
+
+If you're getting value out of these posts, consider subscribing using the link below to receive these posts straight to your inbox! 
+
+[Click here to subscribe!](https://d782b8fa.sibforms.com/serve/MUIFAK2keDpq4jw-krst9Ki0T2Asllq4pHVH7YEaci2JN2o3H1rLOXm-4H3G3lc31swK7WFMNYjoSJqaBleHxcV0vc8EEBLLxb3HK0U59_fRRDFUaj96lZyvOSE2NiYQSi1jC_0L0Tq8wj2_OcG8PFuNsL5SH65CQh_GpSOXqV3FqTJosq6tSRV2e2mw9MSXcAx7-2c_3fY-abRi)
