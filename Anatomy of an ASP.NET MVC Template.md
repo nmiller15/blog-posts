@@ -34,42 +34,54 @@ A solution is a container for a project or set of projects that work together an
 
 You probably won't look at this file or do much with it, but that doesn't mean it isn't important. It contains vital configurations for your project. Most of the manipulation of this file will be done by your IDE, not you. Just know that you cannot get rid of this file!
 
-### The `.csproj` file gives your project dependencies
+### The `.csproj` file sets up your project
 
-The `.csproj` file, on the other hand, defines the dependencies of an individual project. Does it need a class library? How about a NuGet package? All of that good stuff can be defined right here. The syntax is somewhat similar to HTML, using matching opening and closing tags to surrond the information.
+The `.csproj` file is similar to the `.sln` file, but it defines your individual projects. What version of .NET is running? Does it depend on a class library? How about a NuGet package? All of that good stuff can be defined right here. 
 
-## The heart of your project
+Your IDE is going to do most of the manipulation of this file for you too, but this one is a bit easier to go in and poke around. The syntax is somewhat similar to HTML. You use opening and closing tags to surround the specific information that you're defining. You can read more about this file in [Microsoft's documentation](https://learn.microsoft.com/en-us/aspnet/web-forms/overview/deployment/web-deployment-in-the-enterprise/understanding-the-project-file).
 
-All of that is interesting and important to know, but it's not where the fun of the application lives. ASP.NET is object-oriented, meaning that its essentially made up of a bunch of classes with properties and methods. With software designed this way, we need an entry-point.
+## Let's get to the actual code, please
 
-The `Program.cs` file will serve as this entry point for us. If you're familiar with C#, you will be familiar with the `Main([])` method. This is the method that will be called to start your program. This method sets up your application, server, adds middleware, and other important configurations that let all of your classes work as an application! 
+Okay, okay. I hear you. The next place that we will look is the first file that gets executed after your program is compiled, the `Program.cs` file.
 
-### Startup.cs is where you add middleware
+### `Program.cs` is our entry point
 
-Most of these configurations are actually set in a different file though. The `Startup.cs` file actaully contains most of the explicit configurations for an application. The .NET runtime will call `.ConfigureServices()` which lives inside the `Startup.cs` file. 
+The `Program.cs` file is the entry point of our application. This is true for all .NET applications. This file contains your `Main()` method, which sets up your application, adds middleware, mounts configurations and opens pathways to all of the other classes that you create! 
 
-I'm going to be honest, I still pick the wrong one about 50% of the time. The best way to remember it, though, is the the program lives in `Program.cs` and it learns about its startup configuration in `Startup.cs`. 
+### `Startup.cs` is where you add middleware
 
-### You might not have a Startup.cs file
+If we keep all of that configuration in one file, it will get really long and kind of hard to maintain. This is where the `Startup.cs` file comes in handy.  This file holds a `ConfigureServices()` method which is called in `Program.cs`. We can use this to setup any configuration or middleware that we need, but isn't directly related to making our application available. We might define dependency injection configurations, specific error-handling middleware, or logging here!
 
-If you ran the command at the beginning of this article though, you might be looking at your project and thinking that you're missing something. Depending on the framework version that you chose when you created this template, you may only have a `Project.cs` file. And it might not even have a `Main()` method in it!
+When you go to make edits here, you *will* pick the wrong one. I still do it about 50% of the time.
 
-This is because of the new templates that the sdk uses. They take advantage of something called "Top-Level Statements." These allow the project to run on a much more minimal syntax, implying much of the boilerplate code for these projects. 
+### You might not have a `Startup.cs` file
 
-While it might be a little easier to point out the important bits with this syntax, when you're creating a large-scale application with 30 or more middleware components and configuration mounts, then you're going to want to separate these again. 
+You might be looking at your project and thinking that you're missing something....
 
-This use of top-level statements is also very new, so if you're working in a codebase that wasn't created yesterday, odds are, you're going to see a `Program.cs` and a `Startup.cs` file.
+Depending on the framework version that you chose when you created this template, you may not have a `Startup.cs` file. And when you're looking closer at `Program.cs` it doesn't have a  `Main()` method!
 
-## Give the people what they want
+Some of the newer templates in the .NET SDK take advantage of "top-level statements." I won't get into the intricacies of this too much, just know that if you enable top-level statements, you will be reading a simplified syntax that removes lots of boilerplate code. 
 
-A very important file in this template is the `wwwroot` folder. This is where files that are delivered directly to the client are stored. Everything else in your project will live on your server while the application is running, but as soon as someone requests the app from their computer, these files will be delivered.
+You're never going to get confused about which file to go to, but if you're creating a large-scale application with 30 or more middleware components and configuration mounts, then you're going to want to separate these again. 
 
-This files are called *static* files. They include CSS stylesheets, Javascript, and you can even add images to be referenced from in here. Libraries for Bootstrap and jQuery are also stored in here. 
+This use of top-level statements is also very new, so don't use them as an excuse to not know about the `Program.cs` and `Startup.cs` pattern, because most applications running today will still be set up like this.
+
+## Serving web content with `wwwroot`
+
+Now that most of our general .NET files are out the way, lets look at something specific to web applications, the `wwwroot` directory. In a web application, there are a number of files that are delivered directly to the client, and this is the folder that contains these files. 
+
+This files are called *static* files. Static files include CSS stylesheets, Javascript, images and files from libraries like Bootstrap or jQuery. 
 ### Access static files using their pathname
 
-Since these files are delivered to the client, you can access these files in the browser while the app is running. To make sure this works, ensure that in `Program.cs`, before your `app.Run()` call, you have mounted the middleware to use static files. Add a line that says `app.UseStaticFiles()`. 
+Since these files are delivered to the client, you can access them in the browser while the app is running. 
 
-In your wwwroot folder, create a directory named images and put a picture that you have stored on your computer there. Your directory structure should look like this.
+Let's test this out. 
+
+Go to `Program.cs` and make sure that you see `app.UseStaticFiles()` somewhere. If you don't you can add it above `app.Run()`.
+
+In `wwwroot`, create a directory and call it `images`.  Drop an image file that you have on your computer into `images`.
+
+When you're done, your directory structure should look like this.
 
 ```plaintext
 wwwroot/
@@ -80,11 +92,13 @@ wwwroot/
 └── lib/
 ```
 
-Now run your application and visit `https://localhost:{port}/images/testimage.png`. Using your folder structure as a pathname, as you might in your computer's own file system, you can access these files!
+Now run your application and visit `https://localhost:{port}/images/testimage.png`. 
 
-## Your Code Goes Here
+You should see the image displayed in your browser! Using the pathname, as you might in a file browser on your local computer, you can access these static files!
 
-Now it's time to talk about the fun stuff. Where the C# code that you write goes! In the MVC template, there are three folders generated: `Models`, `Views`, `Controllers`. These contain... well exactly what they say. I won't dig too far into exactly what the MVC pattern is here, but for a good resource check out [this article from Codecademy](https://www.codecademy.com/article/mvc). 
+## Models, Views, and Controllers
+
+In the MVC template, there are three folders generated: `Models`, `Views`, and `Controllers`. These contain... well, exactly what they say. This isn't a blog post outlining exactly what the MVC pattern is, if you're not familiar, check out [this article from Codecademy](https://www.codecademy.com/article/mvc). 
 
 ### Models are just C# classes
 
