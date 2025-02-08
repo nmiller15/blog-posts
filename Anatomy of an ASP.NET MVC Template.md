@@ -98,61 +98,34 @@ You should see the image displayed in your browser! Using the pathname, as you m
 
 ## Models, Views, and Controllers
 
-In the MVC template, there are three folders generated: `Models`, `Views`, and `Controllers`. These contain... well, exactly what they say. This isn't a blog post outlining exactly what the MVC pattern is, if you're not familiar, check out [this article from Codecademy](https://www.codecademy.com/article/mvc). 
-
-### Models are just C# classes
-
 ```
+Controllers/
+└── HomeController.cs
 Models/
 └── ErrorViewModel.cs
-```
-
-Starting with the Models folder, you can see that the template doesn't give us a lot. Just a file called `ErrorViewModel.cs`. If you click on it you will find a very simple C# class with properties for `RequestID` and a Boolean `ShowRequestId`.
-
-This class is used by the simple application that is provided for you when you generate the template. The thing to notice here, is that it is a vanilla C# class. There's nothing special added here. This is just a class that can be instantiated later.
-
-Lets say that we were creating [a movie application](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-9.0&tabs=visual-studio). This is the folder where you would create a class for a movie that stores all of its related information: title, director, runtime, etc. This model will then be referenced by all of the places in the application that a movie object is needed.
-
-### Views are written in HTML... sort of
-
-```plaintext
 Views/
 ├── Home/
 │   ├── Index.cshtml
-│   ├── Privacy.cshtml
+│   └── Privacy.cshtml
 ├── Shared/
 │   ├── _Layout.cshtml
 │   ├── _ValidationScriptsPartial.cshtml
 │   └── Error.cshtml
 ├── _ViewImports.cshtml
 └── _ViewStart.cshtml
+
 ```
 
-Like I mentioned above, the template that is generated is a working application. If you launch it, you will see that you can navigate between the home pages (called Index) and a Privacy page. You may notice that there are two files in our `Views/Home/` directory that represent these pages! Let's take a look at our Index file. (Formatted for easier reading.)
+In the MVC template, there are three folders generated: `Models`, `Views`, and `Controllers`. These contain... well, exactly what they say. This isn't a blog post outlining exactly what the MVC pattern is, if you're not familiar, check out [this article from Codecademy](https://www.codecademy.com/article/mvc). Microsoft also has a great tutorial for an MVC application to create a [basic movie database](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-9.0&tabs=visual-studio).
 
-```html
-@{
-    ViewData["Title"] = "Home Page";
-}
+This template provides you with a very simple application that has a Home page (called Index) and a Privacy page. If you navigate to a URL that isn't supported by the application, you be shown an Error page, populated by the `ErrorViewModel.cs` that is stored in the `Models` directory.
 
-<div class="text-center">
-    <h1 class="display-4">@ViewData["Title"]</h1>
-    <p>
-	    Learn about 
-		    <a href="https://learn.microsoft.com/aspnet/core">
-			    building Web apps with ASP.NET Core
-			</a>
-		.
-	</p>
-</div>
-```
+You will add your application views, your model library and all of your business logic between these three directories.
+## Setup a layout for your application
 
-It's just HTML! It has a few additions, but very easy to understand. The `.cshtml` files that you see are View files, html displays that have access to run C# code between the `@` symbols. 
-### Setup a layout for your application
+While we aren't going to piece through each and every file here, two that you should be aware of are `_ViewStart.cshtml` and `_Layout.cshtml`. With these two files, you will create a common layout for every view in your application.
 
-The use of `.cshtml` files also allows for us to keep from repeating code. Load up the mvc template and you will see that a significant amount of the interface doesn't change when you go from one page to another, this is because these views are rendered inside of a layout. 
-
-Two files to point out here are the `_ViewStart.cshtml` and `_Layout.cshtml`. The `_ViewStart.cshtml` file...
+The `_ViewStart.cshtml` file...
 
 ```cs
 @{
@@ -160,46 +133,17 @@ Two files to point out here are the `_ViewStart.cshtml` and `_Layout.cshtml`. Th
 }
 ```
 
-Sets the Layout property for all of the view pages. All views *start* here! Then `_Layout.cshtml` contains the actual layout that we're assigning here!
+... sets the Layout property for all of the view pages. All views *start* here. The file that we've indicated for our layout, `_Layout.cshtml`, contains the HTML for our layout template.
 
-Here is where `<meta>` and `<title>` tags appear, as well as the doctype declarations. When you open this, you'll see that there's quite a bit of HTML here, and it would be pretty annoying to have to put this on every one of your view pages.
+Open up the `_Layout.cshtml` file and you'll see `<meta>` and `<title>` tags, the doctype declaration, logos, a reference to the navigation partial, all things that you don't want to have to rewrite every time you make a view for your application. 
 
-One thing to point out about the `_Layout.cshtml` file is the `@RenderBody()` method. In the starting template for an MVC application, it's called on line 36. This is the method that allows all of the other views to be displayed. Without this method, the application doesn't work! Wherever you put this in the layout is where the view that you're setting will be rendered.
-
-### Controllers decide what views get displayed
-
-```
-Controllers/
-└── HomeController.cs
-```
-
-The last part of the mvc model is the controller, the brains of the operation! If you open the `Controllers` directory, you will see that they supply us with a `HomeController`. In this file, you will see a `HomeController` class that inherits from the `Controller` class.
-
-This `HomeController` class has a constructor, and three methods, `Index()`, `Privacy()`, and `Error()`. You may notice that these correspond directly to the views that we saw in the previous section. These methods handle what happens when a use goes to a certain route on the app. 
-
-Go ahead and launch the application and navigate to `https://localhost:{port}/Home/Privacy`. You will get the `Privacy` View within the `HomeController`!
-
-The slug for the URL is decided first by the name of the controller and then the name of the method that returns an `IActionResult`. 
-
-So if you had the following:
-
-```csharp
-public class MovieController : Controller
-{
-	// props and ctor
-
-	public IActionResult Directors()
-	{
-		return View();
-	}
-}
-```
-
-You could visit `https://localhost:{port}/Movie/Directors` and you would be returned a view, so long as you have a corresponding view in the Views directory!
+In `_Layout.cshtml` you'll also see the `@RenderBody()` method. Wherever this method is called is where the HTML for the current view is rendered. Without this method, none of the views that you create will ever be displayed. 
 
 ## Scratching the surface
 
-This post is by no means an in depth look at the MVC model within the ASP.NET space, we've only scratched the surface of what is possible here. But, armed with this knowledge, you should know enough to be able to create an application template, and know how you can begin to manipulate it to create something simple of your own!
+I hope that, armed with this knowledge, you are able to start hacking away at an application template! Over the next few months, keep an eye out as I dig deeper into ASP.NET and uncover more of the nuts and bolts of the technology to share with you.
+
+Thank you for reading!
 
 ---
 
